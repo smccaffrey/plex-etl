@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h5><a href="/"> Go Home </a></h5>
+    <h3>Here is the list of new items to be added</h3>
+
+    {% for record in records %}
+    <div>
+        <p>{{ record.torrent_name }} </p>
+        <h4>Located at {{ record.file_path }}</h4>
+    </div>
+
+    {% endfor %}
+
+</body>
+</html>
