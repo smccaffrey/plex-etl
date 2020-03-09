@@ -2,9 +2,36 @@ from flask import current_app
 
 from sqlalchemy import exc
 
-from .models import Movies
-from .models import db
-from .database import TestData
+from src.utilities.database.models import Movies
+from src.utilities.database.models import ExtractedMovies
+from src.utilities.database.models import EtlConfig
+
+from src.utilities.database.models import db
+from src.utilities.database.database import create_or_update
+
+from src.utilities.database.database import TestData
+
+
+class InsertExtractedMovies:
+
+    @staticmethod
+    @create_or_update
+    def process(raw_torrent_name: str, full_path_loc: str):
+        return db.session.merge(ExtractedMovies(
+            raw_torrent_name=raw_torrent_name,
+            full_path_loc=full_path_loc
+        ))
+
+
+class InsertEtlConfig:
+
+    @staticmethod
+    @create_or_update
+    def dump_location(dump_location: str):
+        return db.session.merge(EtlConfig(
+            config_entity='dump_location',
+            dump_location=dump_location
+        ))
 
 
 def insert_test_movies():

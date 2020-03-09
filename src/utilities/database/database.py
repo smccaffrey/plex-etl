@@ -14,6 +14,23 @@ import sqlite3
 #     torrent_name = db.Column(db.Text)
 #     file_path = db.Column(db.Text)
 
+from flask import current_app
+
+from sqlalchemy import exc
+
+from src.utilities.database.models import db
+
+def create_or_update(func):
+    def persist(*args, **kwargs):
+        func(*args, **kwargs)
+        try:
+            db.session.commit()
+            # current_app.logger.info("success calling db func: " + func.__name__)
+            return True
+        except exc.SQLAlchemyError as e:
+            db.session.rollback()
+            return False
+    return persist
 
 class TestData:
 

@@ -4,14 +4,79 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body>
+<body style="margin-left: 20px">
     <h5><a href="/"> Go Home </a></h5>
+
+    <div style="display:inline-block">
+
+        <form method="post" action="/update-dump-location">
+            <input type="text" size="50" name="dump_location" value={% if config %} {{ config.dump_location }} {% endif %}>
+            <input type="submit" value="Update">
+        </form>
+
+    </div>
+
+    <div style="display:inline-block">
+        <form method="post", action="/scan">
+            <button type="submit"> Scan </button>
+        </form>
+    </div>
+
     <h3>Here is the list of new items to be added</h3>
 
+    <div class="actions"> Actions
+        <div style="display:inline-block">
+            <form method="post", action="/queue">
+                <button type="submit"> Parse </button>
+            </form>
+        </div>
+
+        <div style="display:inline-block">
+            <form method="post", action="/queue">
+                <button type="submit"> Finalize </button>
+            </form>
+        </div>
+
+        <div style="display:inline-block">
+            <form method="post", action="/queue">
+                <button type="submit"> Load Into Plex </button>
+            </form>
+        </div>
+
+        <div style="display:inline-block">
+            <form method="post", action="/queue">
+                <button type="submit"> Cleanup </button>
+            </form>
+        </div>
+
+    </div>
+
     {% for record in records %}
-    <div>
-        <p>{{ record.torrent_name }} </p>
-        <h4>Located at {{ record.file_path }}</h4>
+    <div style="margin-bottom: 10px;border-bottom: 2px solid gray">
+        <div style="display:inline-block">
+            <p style="display:inline-block">{{ record.raw_torrent_name }} </p>
+            <h6 style="display:inline-block"> <a href="{{ record.full_path_loc }}">System Location</a></h6>
+
+            <div>
+                <div class="parsed-year">
+                    <p style="display:inline-block">Title: </p>
+                    <form style="display:inline-block" method="post" action="/queue">
+                        <input type="text" size="40" name="title">
+                        <input type="submit" value="Update">
+                    </form>
+                </div>
+
+                <div class="parsed-year">
+                    <p style="display:inline-block">Year: </p>
+                    <form style="display:inline-block" method="post" action="/queue">
+                        <input type="text" size="6" name="year">
+                        <input type="submit" value="Update">
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
     {% endfor %}
