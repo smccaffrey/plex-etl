@@ -9,11 +9,14 @@ from flask import url_for
 
 from src.utilities.database.query import QueryEtlConfig
 from src.utilities.database.query import QueryExtractedMovies
+from src.utilities.database.query import QueryTransformedMovies
 
 from src.utilities.database.insert import insert_test_movies
 from src.utilities.database.insert import InsertEtlConfig
 
 from src.utilities.database.delete import delete_test_movies
+
+from src.utilities.parse import ParseExtractedMovies
 
 from src.utilities.scan import ScanForMovies
 
@@ -33,14 +36,8 @@ class Application:
     @application.route('/queue', methods=[AllowedMethods.GET])
     def queue():
         """Returns a rendered template view off all new items in the queue"""
-        # movies = [dict(movie) for movie in Movies.query.all()]
-        # movies = Movies.query.all()
-        # print(movies)
-        # print(type(movies))
-        # for movie in movies:
-        #     print(movie.__dict__)
         config = QueryEtlConfig.get_dump_location()
-        movies = QueryExtractedMovies.get_all()
+        movies = QueryExtractedMovies.get_parsed_results()
         return render_template('queue.html', records=movies, config=config)
 
     @staticmethod
@@ -60,9 +57,8 @@ class Application:
     @staticmethod
     @application.route('/parse', methods=[AllowedMethods.POST])
     def parse():
-        """Parse all active queue items.
-        Also repsonsible for writing successes/failure records to the sqlite database"""
-        return f'Welcome to the Plex ETL Engine!'
+        ParseExtractedMovies.process()
+        return redirect(url_for('application.queue'))
 
     @staticmethod
     @application.route('/test', methods=[AllowedMethods.POST])

@@ -26,7 +26,7 @@
 
     <div class="actions"> Actions
         <div style="display:inline-block">
-            <form method="post", action="/queue">
+            <form method="post", action="/parse">
                 <button type="submit"> Parse </button>
             </form>
         </div>
@@ -54,14 +54,14 @@
     {% for record in records %}
     <div style="margin-bottom: 10px;border-bottom: 2px solid gray">
         <div style="display:inline-block">
-            <p style="display:inline-block">{{ record.raw_torrent_name }} </p>
+            <p style="display:inline-block">{{ record.ExtractedMovies.raw_torrent_name }} </p>
             <h6 style="display:inline-block"> <a href="{{ record.full_path_loc }}">System Location</a></h6>
 
             <div>
                 <div class="parsed-year">
                     <p style="display:inline-block">Title: </p>
                     <form style="display:inline-block" method="post" action="/queue">
-                        <input type="text" size="40" name="title">
+                        <input type="text" size="40" name="title" value="{{ record.parsed_title }}">
                         <input type="submit" value="Update">
                     </form>
                 </div>
@@ -69,7 +69,7 @@
                 <div class="parsed-year">
                     <p style="display:inline-block">Year: </p>
                     <form style="display:inline-block" method="post" action="/queue">
-                        <input type="text" size="6" name="year">
+                        <input type="text" size="6" name="year", value="{{ record.parsed_year }}">
                         <input type="submit" value="Update">
                     </form>
                 </div>

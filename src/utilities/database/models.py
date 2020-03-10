@@ -1,4 +1,3 @@
-# from src.app import db
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -33,18 +32,19 @@ class ExtractedMovies(db.Model):
         return str({'raw_torrent_name': self.raw_torrent_name,
                     'full_path_loc': self.full_path_loc})
 
-
 class TransformedMovies(db.Model):
     __tablename__ = 'transformed_movies'
-    raw_torrent_name = db.Column(db.String(), unique=True, nullable=False, primary_key=True)
-    # full_path_loc = db.Column(db.Text)
+    id = db.Column(db.Integer, primary_key=True)
+    raw_torrent_name = db.Column(db.String(), db.ForeignKey('extracted_movies.raw_torrent_name'),unique=True, nullable=False)
     parsed_title = db.Column(db.Text)
     parsed_year = db.Column(db.Text)
     error = db.Column(db.Boolean)
 
+    extracted_movie = db.relationship('ExtractedMovies', backref='transformed_movies')
+
     def __repr__(self):
         return str({'raw_torrent_name': self.raw_torrent_name,
-                    'full_path_loc': self.full_path_loc,
                     'parsed_title': self.parsed_title,
                     'parsed_year': self.parsed_year,
                     'error': self.error})
+

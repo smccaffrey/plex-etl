@@ -5,6 +5,7 @@ from sqlalchemy import exc
 from src.utilities.database.models import Movies
 from src.utilities.database.models import ExtractedMovies
 from src.utilities.database.models import EtlConfig
+from src.utilities.database.models import TransformedMovies
 
 from src.utilities.database.models import db
 from src.utilities.database.database import create_or_update
@@ -20,6 +21,19 @@ class InsertExtractedMovies:
         return db.session.merge(ExtractedMovies(
             raw_torrent_name=raw_torrent_name,
             full_path_loc=full_path_loc
+        ))
+
+
+class InsertTransformedMovies:
+
+    @staticmethod
+    @create_or_update
+    def process(raw_torrent_name, parsed_title, parsed_year, error=None):
+        return db.session.merge(TransformedMovies(
+            raw_torrent_name=raw_torrent_name,
+            parsed_title=parsed_title,
+            parsed_year=parsed_year,
+            error=error
         ))
 
 
