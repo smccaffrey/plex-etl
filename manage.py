@@ -1,4 +1,5 @@
 import os
+import pathlib
 # import logging
 
 from flask_script import Manager
@@ -12,6 +13,14 @@ from src.utilities.database.models import db
 manager = Manager(app)
 db.init_app(app)
 
+# def db_path(func, path):
+#     if not os.path.exists(os.path.dirname(path=path)):
+#         os.mkdirs(os.path.dirname(path=path))
+#     if not os.path.exists(path=path):
+#         pathlib.Path(path).touch()
+#
+#     return func()
+
 
 @manager.command
 def test():
@@ -23,11 +32,11 @@ def test():
     status_code = 200
     assert status_code == 200, 'Build Failed'
 
-
+# @db_path(path=os.path.join('~/', '.plex-etl', 'dev_database.db'))
 @manager.command
 def dev():
     os.environ['ENV'] = 'dev'
-    database_file = os.path.join('/tmp', 'plex-etl', 'dev_database.db')
+    database_file = os.path.join('/home/sysadmin', '.plex-etl', 'dev_database.db')
     # database_file = os.path.join('/tmp', 'dev_database.db')
     database = "sqlite:///{}".format(database_file)
     app.config["SQLALCHEMY_DATABASE_URI"] = database
