@@ -4,7 +4,7 @@ from sqlalchemy import exc
 
 from src.utilities.helper import AttrDict
 
-from src.utilities.database.models import db
+from src.utilities.database.database import create_or_update
 
 from src.utilities.database.models import EtlConfig
 from src.utilities.database.models import ExtractedMovies
@@ -21,7 +21,7 @@ class QueryExtractedMovies:
     def get_parsed_results():
         results = ExtractedMovies.query \
             .outerjoin(TransformedMovies) \
-            .add_columns(TransformedMovies.parsed_title, TransformedMovies.parsed_year) \
+            .add_columns(TransformedMovies.id,TransformedMovies.parsed_title, TransformedMovies.parsed_year) \
             .all()
 
         return [AttrDict(result._asdict()) for result in results]

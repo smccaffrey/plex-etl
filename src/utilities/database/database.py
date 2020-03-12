@@ -1,18 +1,3 @@
-import os
-import sqlite3
-
-# from flask_sqlalchemy import SQLAlchemy
-#
-# # from src.app import db
-#
-# db = SQLAlchemy()
-# #
-#
-# class Movies(db.Model):
-#     __tablename__ = 'movies-queue'
-#     __table_args__ = {'extend_existing': True}
-#     torrent_name = db.Column(db.Text)
-#     file_path = db.Column(db.Text)
 
 from flask import current_app
 
@@ -25,9 +10,11 @@ def create_or_update(func):
         func(*args, **kwargs)
         try:
             db.session.commit()
-            # current_app.logger.info("success calling db func: " + func.__name__)
+            # current_app.logger.info(f'DB Success: {str(func)}')
             return True
         except exc.SQLAlchemyError as e:
+            current_app.logger.info(f'DB Failure: {str(func)}')
+            current_app.logger.info(f'Error: {e}')
             db.session.rollback()
             return False
     return persist

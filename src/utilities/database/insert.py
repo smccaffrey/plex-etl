@@ -2,7 +2,6 @@ from flask import current_app
 
 from sqlalchemy import exc
 
-from src.utilities.database.models import Movies
 from src.utilities.database.models import ExtractedMovies
 from src.utilities.database.models import EtlConfig
 from src.utilities.database.models import TransformedMovies
@@ -26,10 +25,27 @@ class InsertExtractedMovies:
 
 class InsertTransformedMovies:
 
+    def __str__(self):
+        return self.__class__.__name__
+
     @staticmethod
     @create_or_update
     def process(raw_torrent_name, parsed_title, parsed_year, error=None):
+        current_app.logger.info(
+            f'Inserted raw_torrent_name={raw_torrent_name} | parsed_title={parsed_title} | parsed_year={parsed_year} to transformed_movies')
         return db.session.merge(TransformedMovies(
+            raw_torrent_name=raw_torrent_name,
+            parsed_title=parsed_title,
+            parsed_year=parsed_year,
+            error=error
+        ))
+
+    @staticmethod
+    @create_or_update
+    def process_merge(id, raw_torrent_name, parsed_title, parsed_year, error=None):
+        current_app.logger.info(f'Inserted raw_torrent_name={raw_torrent_name} | parsed_title={parsed_title} | parsed_year={parsed_year} to transformed_movies')
+        return db.session.merge(TransformedMovies(
+            id=id,
             raw_torrent_name=raw_torrent_name,
             parsed_title=parsed_title,
             parsed_year=parsed_year,

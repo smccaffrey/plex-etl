@@ -13,14 +13,14 @@ class EtlConfig(db.Model):
         return str({'dump_location': self.dump_location})
 
 
-class Movies(db.Model):
-    # __tablename__ = 'movies-queue'
-    # __table_args__ = {'extend_existing': True}
-    torrent_name = db.Column(db.String(255), unique=True, nullable=False, primary_key=True)
-    file_path = db.Column(db.Text)
-
-    def __repr__(self):
-        return str({'name': self.torrent_name, 'fpath': self.file_path})
+# class Movies(db.Model):
+#     # __tablename__ = 'movies-queue'
+#     # __table_args__ = {'extend_existing': True}
+#     torrent_name = db.Column(db.String(255), unique=True, nullable=False, primary_key=True)
+#     file_path = db.Column(db.Text)
+#
+#     def __repr__(self):
+#         return str({'name': self.torrent_name, 'fpath': self.file_path})
 
 
 class ExtractedMovies(db.Model):
@@ -37,7 +37,7 @@ class TransformedMovies(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     raw_torrent_name = db.Column(db.String(), db.ForeignKey('extracted_movies.raw_torrent_name'),unique=True, nullable=False)
     parsed_title = db.Column(db.Text)
-    parsed_year = db.Column(db.Text)
+    parsed_year = db.Column(db.Integer)
     error = db.Column(db.Boolean)
 
     extracted_movie = db.relationship('ExtractedMovies', backref='transformed_movies')
