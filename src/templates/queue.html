@@ -4,6 +4,27 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+
+<style>
+
+    .tooltip {
+      position: relative;
+      display:inline-block;
+      border-bottom: 1px dotted black;
+      font-size: 12px;
+    }
+
+    .parsed {
+      display: inline-block;
+      float: right;
+    }
+
+    .parsed-year, .parsed-title {
+      display: inline-block;
+    }
+
+</style>
+
 <body style="margin-left: 20px">
     <h5><a href="/"> Go Home </a></h5>
 
@@ -44,7 +65,7 @@
         </div>
 
         <div style="display:inline-block">
-            <form method="post", action="/queue">
+            <form method="post", action="/cleanup">
                 <button type="submit"> Cleanup </button>
             </form>
         </div>
@@ -52,27 +73,34 @@
     </div>
 
     {% for record in records %}
-    <div style="margin-bottom: 10px;border-bottom: 2px solid gray">
+    <div style="margin-bottom: 1px">
         <div style="display:inline-block">
             <p style="display:inline-block">{{ record.ExtractedMovies.raw_torrent_name }} </p>
-            <h6 style="display:inline-block"> <a href="{{ record.full_path_loc }}">System Location</a></h6>
+            <div class="tooltip"> System Location
+                <span class="tooltiptext">
+                    {{ record.full_path_loc }}
+                </span>
+            </div>
 
-            <div>
-                <div class="parsed-year">
-                    <p style="display:inline-block">Title: </p>
-                    <form style="display:inline-block" method="post" action="/queue">
-                        <input type="text" size="40" name="title" value="{{ record.parsed_title }}">
+            <div class="parsed">
+                <div>
+                    <p style="display:inline-block"></p>
+                    <form style="display:inline-block" method="post" action="/update-parsed-data">
+                        <input type="hidden" name="id" value="{{ record.id }}">
+                        <input type="hidden" name="raw_torrent_name" value="{{ record.ExtractedMovies.raw_torrent_name }}">
+                        <span>Title: <input type="text" size="40" name="parsed_title" value="{{ record.parsed_title }}"></span>
+                        <span>Year: <input type="text" size="6" name="parsed_year", value="{{ record.parsed_year }}"></span>
                         <input type="submit" value="Update">
                     </form>
                 </div>
 
-                <div class="parsed-year">
-                    <p style="display:inline-block">Year: </p>
-                    <form style="display:inline-block" method="post" action="/queue">
-                        <input type="text" size="6" name="year", value="{{ record.parsed_year }}">
-                        <input type="submit" value="Update">
-                    </form>
-                </div>
+<!--                <div class="parsed-title">-->
+<!--                    <p style="display:inline-block">Year: </p>-->
+<!--                    <form style="display:inline-block" method="post" action="/queue">-->
+<!--                        <input type="text" size="6" name="year", value="{{ record.parsed_year }}">-->
+<!--                        <input type="submit" value="Update">-->
+<!--                    </form>-->
+<!--                </div>-->
             </div>
 
         </div>
