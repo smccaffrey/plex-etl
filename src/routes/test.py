@@ -7,20 +7,12 @@ from flask import url_for
 
 from src.utilities.database.query import QueryExtractedMovies
 
-from src.utilities.database.insert import insert_test_movies
-
 from src.utilities.api.methods import AllowedMethods
 
 
 class TestMovies:
 
     test_movies = Blueprint('test_movies', __name__)
-
-    @staticmethod
-    @test_movies.route('/test', methods=[AllowedMethods.POST])
-    def insert_test_movies():
-        insert_test_movies()
-        return redirect(url_for('application.index'))
 
     # @staticmethod
     # @test_movies.route('/delete', methods=[AllowedMethods.POST])

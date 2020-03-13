@@ -1,7 +1,7 @@
 import os
 
 from flask import current_app
-
+from werkzeug.exceptions import NotFound
 
 from src.utilities.database.query import QueryEtlConfig
 from src.utilities.database.insert import InsertExtractedMovies
@@ -11,7 +11,12 @@ class ScanForMovies:
 
     @staticmethod
     def start():
-        dump_location = QueryEtlConfig.get_dump_location().dump_location
+        dump_location = QueryEtlConfig.get_dump_location().config_value
+
+        if dump_location is None:
+            raise NotFound
+
+        print(dump_location)
 
         for root, dirs, files in os.walk(dump_location):
             for file in files:

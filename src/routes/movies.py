@@ -10,12 +10,11 @@ from flask import url_for
 from src.utilities.database.query import QueryEtlConfig
 from src.utilities.database.query import QueryExtractedMovies
 
-from src.utilities.database.insert import insert_test_movies
 from src.utilities.database.insert import InsertTransformedMovies
 
-
-
 from src.utilities.scan import ScanForMovies
+from src.utilities.transform import TransformMovies
+from src.utilities.load import LoadMovies
 
 from src.utilities.api.methods import AllowedMethods
 
@@ -27,7 +26,8 @@ class Movies:
     @movies.route('/queue', methods=[AllowedMethods.GET])
     def queue():
         """Returns a rendered template view off all new items in the queue"""
-        config = QueryEtlConfig.get_dump_location()
+        # config = QueryEtlConfig.get_dump_location()
+        config = QueryEtlConfig.get_all()
         movies = QueryExtractedMovies.get_parsed_results()
         return render_template('queue.html', records=movies, config=config)
 
@@ -50,8 +50,18 @@ class Movies:
         return redirect(url_for('movies.queue'))
 
     @staticmethod
-    @movies.route('/test', methods=[AllowedMethods.POST])
-    def insert_test_movies():
-        insert_test_movies()
-        return redirect(url_for('movies.index'))
+    @movies.route('/transform', methods=[AllowedMethods.POST])
+    def transform():
+        TransformMovies.queue()
+        TransformMovies.execute()
+        return redirect(url_for('movies.queue'))
+
+    @staticmethod
+    @movies.route('/load-into-plex', methods=[AllowedMethods.POST])
+    def load_into_plex():
+        LoadMovies.execute()
+        return redirect(url_for('movies.queue'))
+
+
+
 

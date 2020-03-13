@@ -6,6 +6,7 @@ from src.utilities.database.database import create_or_update
 
 from src.utilities.database.models import ExtractedMovies
 from src.utilities.database.models import TransformedMovies
+from src.utilities.database.models import LoadMovies
 
 # def delete_test_movies():
 #     movies = Movies.query.all()
@@ -27,4 +28,5 @@ class Delete:
     def all():
         db.session.query(ExtractedMovies).delete()
         db.session.query(TransformedMovies).delete()
+        db.session.query(LoadMovies).delete()
 

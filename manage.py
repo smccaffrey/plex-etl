@@ -8,6 +8,7 @@ from flask_script import Manager
 
 from src.app import app
 from src.utilities.database.models import db
+from src.utilities.database.setup import DefaultConfigValues
 
 
 manager = Manager(app)
@@ -42,6 +43,7 @@ def dev():
     app.config["SQLALCHEMY_DATABASE_URI"] = database
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True  # maybe remove later
     db.create_all()
+    DefaultConfigValues.setup()
 
     app.run(debug=True, port=3001)
 

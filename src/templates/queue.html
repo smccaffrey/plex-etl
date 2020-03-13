@@ -28,20 +28,37 @@
 <body style="margin-left: 20px">
     <h5><a href="/"> Go Home </a></h5>
 
-    <div style="display:inline-block">
+    {% for config_item in config %}
 
-        <form method="post" action="/update-dump-location">
-            <input type="text" size="50" name="dump_location" value={% if config %} {{ config.dump_location }} {% endif %}>
-            <input type="submit" value="Update">
-        </form>
+        {% if config_item.config_name == "dump_location" %}
 
-    </div>
+            <div style="display:inline-block">
+                <form method="post" action="/update-config"> Raw Media Location:
+                    <input type="hidden" name="config_name" value="dump_location">
+                    <input type="text" size="50" name="config_value" value={% if config_item.config_value  %} {{ config_item.config_value }} {% endif %}>
+                    <input type="submit" value="Update">
+               </form>
+            </div>
 
-    <div style="display:inline-block">
-        <form method="post", action="/scan">
-            <button type="submit"> Scan </button>
-        </form>
-    </div>
+            <div style="display:inline-block">
+                <form method="post", action="/scan">
+                    <button type="submit"> Scan </button>
+                </form>
+            </div>
+
+        {% elif config_item.config_name == "plex_movie_dir" %}
+
+            <div>
+                <form method="post" action="/update-config"> Plex Movie Location:
+                    <input type="hidden" name="config_name" value="plex_movie_dir">
+                    <input type="text" size="50" name="config_value" value={% if config_item.config_value %} {{ config_item.config_value }} {% endif %}>
+                    <input type="submit" value="Update">
+                </form>
+            </div>
+
+        {% endif %}
+
+    {% endfor %}
 
     <h3>Here is the list of new items to be added</h3>
 
@@ -53,13 +70,13 @@
         </div>
 
         <div style="display:inline-block">
-            <form method="post", action="/queue">
-                <button type="submit"> Finalize </button>
+            <form method="post", action="/transform">
+                <button type="submit"> Transform </button>
             </form>
         </div>
 
         <div style="display:inline-block">
-            <form method="post", action="/queue">
+            <form method="post", action="/load-into-plex">
                 <button type="submit"> Load Into Plex </button>
             </form>
         </div>
