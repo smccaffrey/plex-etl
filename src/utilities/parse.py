@@ -4,8 +4,8 @@ from src.utilities.database.query import QueryExtractedMovies
 
 from src.utilities.database.insert import InsertTransformedMovies
 
-class ParseExtractedMovies:
 
+class ParseExtractedMovies:
     Parser = ParseFileName()
 
     @classmethod
@@ -17,4 +17,3 @@ class ParseExtractedMovies:
                 parsed_title=parts['title'] if parts.keys().__contains__('title') else None,
                 parsed_year=parts['year'] if parts.keys().__contains__('year') else None
             )
-

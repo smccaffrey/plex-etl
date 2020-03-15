@@ -7,7 +7,7 @@ from flask import render_template
 from flask import redirect
 from flask import url_for
 
-from src.utilities.database.query import QueryEtlConfig
+# from src.utilities.database.query import QueryEtlConfig
 from src.utilities.database.query import QueryExtractedMovies
 
 from src.utilities.database.insert import InsertTransformedMovies
@@ -26,10 +26,8 @@ class Movies:
     @movies.route('/queue', methods=[AllowedMethods.GET])
     def queue():
         """Returns a rendered template view off all new items in the queue"""
-        # config = QueryEtlConfig.get_dump_location()
-        config = QueryEtlConfig.get_all()
-        movies = QueryExtractedMovies.get_parsed_results()
-        return render_template('queue.html', records=movies, config=config)
+        movies = QueryExtractedMovies.get_full_results()
+        return render_template('queue.html', records=movies)
 
     @staticmethod
     @movies.route('/scan', methods=[AllowedMethods.POST])

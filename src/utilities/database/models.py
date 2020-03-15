@@ -33,7 +33,6 @@ class TransformedMovies(db.Model):
                                  nullable=False)
     parsed_title = db.Column(db.Text)
     parsed_year = db.Column(db.Integer)
-    error = db.Column(db.Boolean)
 
     extracted_movie = db.relationship('ExtractedMovies', backref='transformed_movies')
 
@@ -43,11 +42,13 @@ class TransformedMovies(db.Model):
                     'parsed_year': self.parsed_year,
                     'error': self.error})
 
+
 class LoadMovies(db.Model):
     __tablename__ = 'load_movies'
     id = db.Column(db.Integer, primary_key=True)
     raw_torrent_name = db.Column(db.String(),
                                  db.ForeignKey('transformed_movies.raw_torrent_name'),
+                                 db.ForeignKey('extracted_movies.raw_torrent_name'),
                                  unique=True,
                                  nullable=False)
     source_full = db.Column(db.Text)
@@ -55,8 +56,11 @@ class LoadMovies(db.Model):
     destination_full = db.Column(db.Text)
     new_dir = db.Column(db.Text)
     new_name = db.Column(db.Text)
+    error = db.Column(db.Boolean, default=False)
+    loaded = db.Column(db.Boolean, default=False)
 
     transformed_movie = db.relationship('TransformedMovies', backref='load_movies')
+    extracted_movies = db.relationship('ExtractedMovies', viewonly=True, backref='load_movies')
 
     def __repr__(self):
         return str({'id': self.id,
@@ -65,4 +69,14 @@ class LoadMovies(db.Model):
                     'destination_parent': self.destination_parent,
                     'destination_full': self.destination_parent,
                     'new_dir': self.new_dir,
-                    'new_name': self.new_name})
+                    'new_name': self.new_name,
+                    'error': self.error,
+                    'loaded': self.loaded})
+
+
+class TestMovies(db.Model):
+    __tablename__ = 'test_movies'
+    raw_torrent_name = db.Column(db.String(), unique=True, nullable=False, primary_key=True)
+
+    def __repr__(self):
+        return str({'raw_torrent_name': self.raw_torrent_name})

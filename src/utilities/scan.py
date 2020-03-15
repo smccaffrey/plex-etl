@@ -16,8 +16,6 @@ class ScanForMovies:
         if dump_location is None:
             raise NotFound
 
-        print(dump_location)
-
         for root, dirs, files in os.walk(dump_location):
             for file in files:
                 full_path_loc = os.path.join(root, file)

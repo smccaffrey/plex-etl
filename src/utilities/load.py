@@ -4,6 +4,8 @@ import shutil
 from flask import current_app
 
 from src.utilities.database.query import QueryLoadMovies
+from src.utilities.database.insert import InsertLoadMovies
+
 
 class LoadMovies:
 
@@ -12,7 +14,9 @@ class LoadMovies:
 
     @staticmethod
     def execute():
-        movies = QueryLoadMovies.get_all()
+        movies = QueryLoadMovies.get_all(filter_errors=True)
+
+        # print(movies)
 
         for movie in movies:
 
@@ -34,6 +38,10 @@ class LoadMovies:
                 current_app.logger.info(e)
 
             shutil.move(_old_file_dir, _new_file_dir)
+
+            InsertLoadMovies.process_loaded(
+                id=movie.id,
+                loaded=True
+            )
+
             current_app.logger.info(f'Moved file \n \t {_old_file_dir} \n \t\t --> {_new_file_dir}')
-
-

@@ -2,67 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Plex ETL Queue</title>
+
+    <style>
+
+        .rwd-table {
+          margin-top: 10px;
+        }
+
+        .rwd-table, td, th {
+          border: 1px solid #ddd;
+          text-align: left;
+        }
+
+        table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        th, td {
+          padding: 15px;
+        }
+
+        .checks {
+          text-align: center;
+        }
+
+        .sys_path span {
+          display: None;
+          font-size: 10px
+        }
+
+        .sys_path:hover span {
+          display: block;
+        }
+
+        .sys_path:hover p {
+          display: None;
+        }
+
+    </style>
+
 </head>
-
-<style>
-
-    .tooltip {
-      position: relative;
-      display:inline-block;
-      border-bottom: 1px dotted black;
-      font-size: 12px;
-    }
-
-    .parsed {
-      display: inline-block;
-      float: right;
-    }
-
-    .parsed-year, .parsed-title {
-      display: inline-block;
-    }
-
-</style>
 
 <body style="margin-left: 20px">
     <h5><a href="/"> Go Home </a></h5>
 
-    {% for config_item in config %}
-
-        {% if config_item.config_name == "dump_location" %}
-
-            <div style="display:inline-block">
-                <form method="post" action="/update-config"> Raw Media Location:
-                    <input type="hidden" name="config_name" value="dump_location">
-                    <input type="text" size="50" name="config_value" value={% if config_item.config_value  %} {{ config_item.config_value }} {% endif %}>
-                    <input type="submit" value="Update">
-               </form>
-            </div>
-
-            <div style="display:inline-block">
-                <form method="post", action="/scan">
-                    <button type="submit"> Scan </button>
-                </form>
-            </div>
-
-        {% elif config_item.config_name == "plex_movie_dir" %}
-
-            <div>
-                <form method="post" action="/update-config"> Plex Movie Location:
-                    <input type="hidden" name="config_name" value="plex_movie_dir">
-                    <input type="text" size="50" name="config_value" value={% if config_item.config_value %} {{ config_item.config_value }} {% endif %}>
-                    <input type="submit" value="Update">
-                </form>
-            </div>
-
-        {% endif %}
-
-    {% endfor %}
-
-    <h3>Here is the list of new items to be added</h3>
+    <h3>Movie Queue</h3>
+    <p> <i> The movie queue pipeline follows a standard Extract, Transform, and Load process.</i> </p>
+    <p> <i> Performing steps out of order is permitted but not advised.</i> </p>
+    <p> <i> NOTE: The `Cleanup` action only deletes database records, not system files.</i> </p>
 
     <div class="actions"> Actions
+        <div style="display:inline-block">
+            <form method="post", action="/scan">
+                <button type="submit"> Extract </button>
+            </form>
+        </div>
+
         <div style="display:inline-block">
             <form method="post", action="/parse">
                 <button type="submit"> Parse </button>
@@ -89,35 +86,39 @@
 
     </div>
 
-    {% for record in records %}
-    <div style="margin-bottom: 1px">
-        <div style="display:inline-block">
-            <p style="display:inline-block">{{ record.ExtractedMovies.raw_torrent_name }} </p>
-            <div class="tooltip"> System Location
-                <span class="tooltiptext">
-                    {{ record.full_path_loc }}
-                </span>
-            </div>
+    <table class="rwd-table">
+        <tr>
+            <th>Raw Media Title</th>
+            <th>System Location</th>
+            <th>Parsed Title</th>
+            <th>Parsed Year</th>
+            <th>Update</th>
+            <th>Transformed</th>
+            <th>Loaded</th>
+        </tr>
 
-            <div class="parsed">
-                <div>
-                    <p style="display:inline-block"></p>
-                    <form style="display:inline-block" method="post" action="/update-parsed-data">
-                        <input type="hidden" name="id" value="{{ record.id }}">
-                        <input type="hidden" name="raw_torrent_name" value="{{ record.ExtractedMovies.raw_torrent_name }}">
-                        <span>Title: <input type="text" size="40" name="parsed_title" value="{{ record.parsed_title }}"></span>
-                        <span>Year: <input type="text" size="6" name="parsed_year", value="{{ record.parsed_year }}"></span>
-                        <input type="submit" value="Update">
-                    </form>
-                </div>
+        {% for record in records %}
+        <form style="display:inline-block" method="post" action="/update-parsed-data">
 
-            </div>
+            <input type="hidden" name="id" value="{{ record.id }}">
+            <input type="hidden" name="raw_torrent_name" value="{{ record.ExtractedMovies.raw_torrent_name }}">
 
-        </div>
+            <tr>
+                <td data-th="Raw Media Title">{{ record.ExtractedMovies.raw_torrent_name }}</td>
 
-    </div>
+                <td class="sys_path" data-th="System Location"><span>{{ record.ExtractedMovies.full_path_loc }}</span><p>SysPath</p></td>
+
+                <td data-th="Parsed Title"><input type="text" size="50%" name="parsed_title" value="{{ record.parsed_title }}"></td>
+                <td data-th="Parsed Year"><input type="text" size="6" name="parsed_year", value="{{ record.parsed_year }}"></td>
+                <td data-th="Update"><input type="submit" value="Update"></td>
+                <td class="checks" data-th="Transformed">{% if record.error or record.error is none %}<font color="red"> × </font>{% else %}<font color="green"> ✔ </font>{% endif %}</td>
+                <td class="checks" data-th="Loaded">{% if record.loaded %}<font color="green"> ✔ </font>{% else %}<font color="red"> × </font>{% endif %}</td>
+            </tr>
+
+        </form>
 
     {% endfor %}
+    </table>
 
 </body>
 </html>

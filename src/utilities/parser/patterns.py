@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 patterns = [
     ('season', '(s?([0-9]{1,2}))[ex]'),

@@ -2,16 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Plex ETL</title>
+
+    <style>
+
+        .rwd-table {
+          margin-top: 10px;
+        }
+
+        .rwd-table, td, th {
+          border: 1px solid #ddd;
+          text-align: left;
+        }
+
+        table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        th, td {
+          padding: 15px;
+        }
+
+    </style>
+
 </head>
-<body>
+<body style="margin-left: 20px">
     <h2>Plex ETL Homepage</h2>
-    <ul>
-        <div><a href="/queue ">queue</a></div>
-        <div style="display:inline-block">Test
+
+    <h4><a href="/queue ">Movie Queue</a></h4>
+
+    <h4>ETL Config</h4>
+
+    <table class="rwd-table">
+        <tr>
+            <th>Config Name</th>
+            <th>Config Value</th>
+            <th>Update</th>
+        </tr>
+
+        {% for config_item in config %}
+
+            {% if config_item.config_name == "dump_location" %}
+
+                <form method="post" action="/update-config">
+                    <input type="hidden" name="config_name" value="dump_location">
+                    <tr>
+                        <td data-th="Config Name">Raw Media Location</td>
+                        <td data-th="Config Value"><input type="text" size="50" name="config_value" value={% if config_item.config_value  %} {{ config_item.config_value }} {% endif %}></td>
+                        <td data-th="Update"><input type="submit" value="Update"></td>
+                    </tr>
+               </form>
+
+            {% elif config_item.config_name == "plex_movie_dir" %}
+
+                <form method="post" action="/update-config">
+                    <input type="hidden" name="config_name" value="plex_movie_dir">
+                    <tr>
+                        <td data-th="Config Name">Plex Movie Library</td>
+                        <td data-th="Config Value"><input type="text" size="50" name="config_value" value={% if config_item.config_value  %} {{ config_item.config_value }} {% endif %}></td>
+                        <td data-th="Update"><input type="submit" value="Update"></td>
+                    </tr>
+               </form>
+
+            {% endif %}
+
+        {% endfor %}
+
+
+    </table>
+
+    <h4>Testing</h4>
+
+        <div style="display:inline-block">
 
             <div style="display:inline-block">
-                <form method="post", action="/test">
+                <form method="post", action="/insert-test-files">
                     <button type="submit"> Insert Test Movies </button>
                 </form>
             </div>
@@ -28,7 +94,6 @@
                 </form>
             </div>
         </div>
-        <div>status</div>
-    </ul>
+
 </body>
 </html>

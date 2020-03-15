@@ -3,7 +3,7 @@ import enum
 
 class AllowedMethods(enum.EnumMeta):
     """This class exists because I'm tired of
-	typeing quotes to validate request.method
+	typing quotes to validate request.method
 	types"""
 
     GET = 'GET'

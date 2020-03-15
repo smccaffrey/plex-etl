@@ -1,15 +1,12 @@
-from flask import current_app
-
-from sqlalchemy import exc
 
 from src.utilities.helper import AttrDict
 
-from src.utilities.database.database import create_or_update
 
 from src.utilities.database.models import EtlConfig
 from src.utilities.database.models import ExtractedMovies
 from src.utilities.database.models import TransformedMovies
 from src.utilities.database.models import LoadMovies
+from src.utilities.database.models import TestMovies
 
 
 class QueryExtractedMovies:
@@ -23,6 +20,16 @@ class QueryExtractedMovies:
         results = ExtractedMovies.query \
             .outerjoin(TransformedMovies) \
             .add_columns(TransformedMovies.id,TransformedMovies.parsed_title, TransformedMovies.parsed_year) \
+            .all()
+        return [AttrDict(result._asdict()) for result in results]\
+
+    @staticmethod
+    def get_full_results():
+        results = ExtractedMovies.query \
+            .outerjoin(TransformedMovies) \
+            .add_columns(TransformedMovies.id,TransformedMovies.parsed_title, TransformedMovies.parsed_year) \
+            .outerjoin(LoadMovies) \
+            .add_columns(LoadMovies.error, LoadMovies.loaded) \
             .all()
         return [AttrDict(result._asdict()) for result in results]
 
@@ -39,7 +46,9 @@ class QueryLoadMovies:
         return
 
     @staticmethod
-    def get_all():
+    def get_all(filter_errors=False):
+        if filter_errors:
+            return LoadMovies.query.filter_by(error=False).filter_by(loaded=False).all()
         return LoadMovies.query.all()
 
     @staticmethod
@@ -63,3 +72,12 @@ class QueryEtlConfig:
     @staticmethod
     def get_plex_movie_dir():
         return EtlConfig.query.filter_by(config_name='plex_movie_dir').first()
+
+class QueryTestMovies:
+
+    def __init__(self):
+        return
+
+    @staticmethod
+    def get_all():
+        return TestMovies.query.all()

@@ -1,13 +1,12 @@
 import os
 
-from src.utilities.helper import Movie
-
 from src.utilities.database.insert import InsertLoadMovies
 from src.utilities.database.query import QueryExtractedMovies
 from src.utilities.database.query import QueryLoadMovies
 from src.utilities.database.query import QueryEtlConfig
 
 from src.utilities.database.database import create_or_update
+
 
 class TransformMovies:
 
@@ -18,11 +17,7 @@ class TransformMovies:
         for movie in movies:
             InsertLoadMovies.process(
                 raw_torrent_name=movie.raw_torrent_name,
-                source_full=movie.full_path_loc,
-                destination_parent=None,
-                destination_full=None,
-                new_dir=None,
-                new_name=None
+                source_full=movie.full_path_loc
             )
 
     @staticmethod
@@ -35,6 +30,15 @@ class TransformMovies:
             raise TypeError('Missing Plex Movies Directory in EtlConfig Table')
 
         for movie in movies:
+
+            error = False
+
+            if movie.parsed_title is None or movie.parsed_year is None:
+                error = True
+
+            if movie.parsed_title in ['None', ''] or movie.parsed_year in ['None', '']:
+                error = True
+
             _new_dir = f'{movie.parsed_title} ({movie.parsed_year})'
             _ext = movie.LoadMovies.raw_torrent_name.split('.')[-1]
             _new_file_name = f'{_new_dir}.{_ext}'
@@ -48,7 +52,7 @@ class TransformMovies:
                 destination_parent=destination_parent,
                 destination_full=destination_full,
                 new_dir=_new_dir,
-                new_name=_new_file_name
+                new_name=_new_file_name,
+                error=error,
+                loaded=movie.LoadMovies.loaded
             )
-
-

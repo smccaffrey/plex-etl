@@ -18,7 +18,7 @@ class Config:
     def update():
         if request.form:
             InsertEtlConfig.dump_location(dump_location=request.form.get("dump_location"))
-        return redirect(url_for('movies.queue'))
+        return redirect(url_for('application.index'))
 
     @staticmethod
     @config.route('/update-config', methods=[AllowedMethods.POST])
@@ -26,4 +26,4 @@ class Config:
         if request.form:
             InsertEtlConfig.process(config_name=request.form.get("config_name"),
                                     config_value=request.form.get("config_value"))
-        return redirect(url_for('movies.queue'))
+        return redirect(url_for('application.index'))
