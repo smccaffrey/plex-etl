@@ -48,7 +48,7 @@ def prod():
     db.create_all()
     DefaultConfigValues.setup()
 
-    app.run(debug=False, port=3002)
+    app.run(host='0.0.0.0', debug=False, port=3002)
 
 
 if __name__ == '__main__':
