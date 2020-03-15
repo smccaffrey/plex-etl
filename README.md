@@ -3,5 +3,6 @@ ETL tool for extracting, transforming, and loading movies into your plex server.
 
 *Still in Development*
 
-### Sample Queue
-![Screenshot from 2020-03-08 23-09-43](https://user-images.githubusercontent.com/11462398/76187320-4345f880-6192-11ea-911c-e59c8608d892.png)
+### Sample Usage
+
+![screen_recording](https://user-images.githubusercontent.com/11462398/76693060-6baf7600-661c-11ea-8e4d-1692a4bd1d5d.gif)
