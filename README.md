@@ -34,6 +34,10 @@ Run in `prod` mode
 ![flask-powered](https://user-images.githubusercontent.com/11462398/76695149-074edf80-6639-11ea-94b5-7076fe17c723.png)
 ![sqla_logo](https://user-images.githubusercontent.com/11462398/76695166-3f562280-6639-11ea-84a5-c6e72a1026ee.png)
 
-### Sample Usage
+## Sample Usage
+### Config Screen
+![config_example](https://user-images.githubusercontent.com/11462398/76706998-fc339800-66a8-11ea-951f-2f66abdc6c5d.gif)
+
+### Movie Queue
 ![screen_recording](https://user-images.githubusercontent.com/11462398/76693060-6baf7600-661c-11ea-8e4d-1692a4bd1d5d.gif)
 
