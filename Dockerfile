@@ -9,7 +9,7 @@ RUN mkdir /plex-etl
 WORKDIR /plex-etl
 COPY Pip* /plex-etl/
 
-RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
+#RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
 RUN pip install pipenv && \
 	cd /plex-etl && \
